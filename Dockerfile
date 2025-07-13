@@ -33,12 +33,14 @@ RUN wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd6
  && apt-get install -y ./google-chrome-stable_current_amd64.deb \
  && rm google-chrome-stable_current_amd64.deb
 
-RUN CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+') \
- && wget -q "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/${CHROME_VERSION}/linux64/chromedriver-linux64.zip" \
- && unzip chromedriver-linux64.zip \
- && mv chromedriver-linux64/chromedriver /usr/local/bin/chromedriver \
+# Указываем точную версию ChromeDriver (совпадает с Chrome 114+)
+ENV CHROMEDRIVER_VERSION=114.0.5735.90
+
+RUN wget -q https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip \
+ && unzip chromedriver_linux64.zip \
+ && mv chromedriver /usr/local/bin/chromedriver \
  && chmod +x /usr/local/bin/chromedriver \
- && rm -rf chromedriver-linux64*
+ && rm chromedriver_linux64.zip
 
 RUN pip install --upgrade pip selenium
 
